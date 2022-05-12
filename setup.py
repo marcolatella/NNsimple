@@ -12,6 +12,7 @@ install_requires = [
     'pandas',
     'pytorch_lightning>=1.5',
     'torchvision',
+    'torchmetrics',
     'PyYAML',
     'torch>=1.11',
     'tqdm',

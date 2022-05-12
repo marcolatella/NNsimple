@@ -8,6 +8,8 @@ dependencies:
   - python=3.8
   - torchvision
   - torchaudio
+  - torchmetrics
+  - PyYAML
   - pytorch>=1.11 # it was >=1.9
   - wheel
   - pip:
