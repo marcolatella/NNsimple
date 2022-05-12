@@ -1,4 +1,5 @@
 import pytorch_lightning as pl
+from torchmetrics.functional import accuracy
 
 
 class Predictor(pl.LightningModule):
@@ -15,21 +16,29 @@ class Predictor(pl.LightningModule):
         x, y = batch
         logits = self.model(x)
         train_loss = self.loss_fn(logits, y)
-        self.log("train_loss", train_loss, on_step=True, on_epoch=False, prog_bar=True, logger=True)
+        acc = accuracy(logits, y)
+        metrics = {'train_acc': acc}
+        self.log_dict(metrics, on_step=False, on_epoch=True, prog_bar=True, logger=True)
+        self.log('train_loss', train_loss, prog_bar=True)
         return train_loss
 
     def validation_step(self, batch, batch_index):
         x, y = batch
         logits = self.model(x)
         val_loss = self.loss_fn(logits, y)
-        self.log("val_loss", val_loss, on_epoch=True, prog_bar=True, logger=True)
+        acc = accuracy(logits, y)
+        metrics = {'val_acc': acc}
+        self.log_dict(metrics, on_step=False, on_epoch=True, prog_bar=True, logger=True)
+        self.log('val_loss', val_loss, prog_bar=True)
         return val_loss
 
     def test_step(self, batch, batch_index):
         x, y = batch
         logits = self.model(x)
         test_loss = self.loss_fn(logits, y)
-        self.log("test_loss", test_loss, on_epoch=True, prog_bar=True, logger=True)
+        acc = accuracy(logits, y)
+        metrics = {'Accuracy': acc}
+        self.log_dict(metrics, on_step=False, on_epoch=True, prog_bar=True, logger=True)
         return test_loss
 
     def configure_optimizers(self):

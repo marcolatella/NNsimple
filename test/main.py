@@ -3,14 +3,14 @@ import torch
 import torchvision
 import torchvision.transforms as transforms
 import torch.optim as optim
+from pytorch_lightning.callbacks import ModelCheckpoint
+
 from nnsimple import nn
 from nnsimple import Predictor
 import numpy as np
 
 
 def main():
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-
     train_set = torchvision.datasets.CIFAR10(root='./ data', train=True, transform=transforms.ToTensor(), download=True)
     test_set = torchvision.datasets.CIFAR10(root='./ data', train=False, transform=transforms.ToTensor())
 
@@ -58,7 +58,7 @@ def main():
     learning_rate = 0.001
     momentum = 0.9
 
-    model = nn.models.CNN(dropout_value=0.0)
+    model = nn.models.CNN(dropout_value=0.4)
     loss_fn = torch.nn.CrossEntropyLoss()
     optimizer = optim.SGD(model.parameters(), lr=learning_rate, momentum=momentum)
 
@@ -66,13 +66,21 @@ def main():
                           loss_fn=loss_fn,
                           optimizer=optimizer)
 
-    trainer = Trainer(max_epochs=2,
+    checkpoint_callback = ModelCheckpoint(save_top_k=1,
+                                          monitor='val_acc', mode='max')
+
+    trainer = Trainer(max_epochs=5,
                       gpus=1 if torch.cuda.is_available() else None,
+                      callbacks=[checkpoint_callback],
                       )
 
-    trainer.fit(predictor, train_dataloaders=train_loader, val_dataloaders=val_loader)
+    trainer.fit(predictor,
+                train_dataloaders=train_loader,
+                val_dataloaders=val_loader)
 
-    trainer.test(predictor, dataloaders=test_loader, verbose=True)
+    trainer.test(predictor,
+                 dataloaders=test_loader,
+                 verbose=True)
 
 
 if __name__ == "__main__":
