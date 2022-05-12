@@ -1,0 +1,14 @@
+name: NNsimple
+channels:
+  - defaults
+  - pytorch
+  - conda-forge
+dependencies:
+  - pip
+  - python=3.8
+  - pytorch>=1.11 # it was >=1.9
+  - pip:
+      - numpy
+      - pandas
+      - pytorch-lightning>=1.5
+      - tqdm
