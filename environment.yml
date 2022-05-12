@@ -6,9 +6,13 @@ channels:
 dependencies:
   - pip
   - python=3.8
+  - torchvision
+  - torchaudio
   - pytorch>=1.11 # it was >=1.9
+  - wheel
   - pip:
       - numpy
       - pandas
       - pytorch-lightning>=1.5
       - tqdm
+      - torchmetrics>=0.7

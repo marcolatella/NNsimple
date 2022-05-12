@@ -11,8 +11,9 @@ install_requires = [
     'numpy',
     'pandas',
     'pytorch_lightning>=1.5',
+    'torchvision',
     'PyYAML',
-    'torch>=1.9',
+    'torch>=1.11',
     'tqdm',
 ]
 
@@ -32,7 +33,7 @@ setup(
     keywords=[
         'pytorch',
     ],
-    python_requires='>=3.8',
+    python_requires='=3.8',
     install_requires=install_requires,
     extras_require={
         'full': full_install_requires,
