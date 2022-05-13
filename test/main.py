@@ -60,7 +60,13 @@ def main():
     learning_rate = 0.001
     momentum = 0.9
 
-    model = nn.models.CNN(dropout_value=0.4)
+    input_size = 3
+    hidden_size = 32
+    n_classes = 10
+    dropout = 0.5
+    kernel_size = 3
+
+    model = nn.models.CNN(input_size, hidden_size, n_classes, kernel_size, dropout)
     loss_fn = torch.nn.CrossEntropyLoss()
     optimizer = optim.SGD(model.parameters(), lr=learning_rate, momentum=momentum)
 
