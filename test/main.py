@@ -1,9 +1,11 @@
+import torchmetrics.functional
 from pytorch_lightning import Trainer
 import torch
 import torchvision
 import torchvision.transforms as transforms
 import torch.optim as optim
 from pytorch_lightning.callbacks import ModelCheckpoint
+from torchmetrics import MetricCollection, Accuracy, ConfusionMatrix, Precision
 
 from nnsimple import nn
 from nnsimple import Predictor
@@ -62,14 +64,21 @@ def main():
     loss_fn = torch.nn.CrossEntropyLoss()
     optimizer = optim.SGD(model.parameters(), lr=learning_rate, momentum=momentum)
 
+    metrics = {
+        'train_metrics': MetricCollection({'train_acc': Accuracy()}),
+        'val_metrics': MetricCollection({'val_acc': Accuracy()}),
+        'test_metrics': MetricCollection({'test_acc': Accuracy()})
+    }
+
     predictor = Predictor(model=model,
                           loss_fn=loss_fn,
-                          optimizer=optimizer)
+                          optimizer=optimizer,
+                          metrics=metrics)
 
     checkpoint_callback = ModelCheckpoint(save_top_k=1,
                                           monitor='val_acc', mode='max')
 
-    trainer = Trainer(max_epochs=5,
+    trainer = Trainer(max_epochs=2,
                       gpus=1 if torch.cuda.is_available() else None,
                       callbacks=[checkpoint_callback],
                       )
