@@ -1,11 +1,10 @@
-import torchmetrics.functional
 from pytorch_lightning import Trainer
 import torch
 import torchvision
 import torchvision.transforms as transforms
 import torch.optim as optim
 from pytorch_lightning.callbacks import ModelCheckpoint
-from torchmetrics import MetricCollection, Accuracy, ConfusionMatrix, Precision
+from torchmetrics import MetricCollection, Accuracy
 
 from nnsimple import nn
 from nnsimple import Predictor

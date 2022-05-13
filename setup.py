@@ -34,7 +34,7 @@ setup(
     keywords=[
         'pytorch',
     ],
-    python_requires='=3.8',
+    python_requires='>=3.8',
     install_requires=install_requires,
     extras_require={
         'full': full_install_requires,
