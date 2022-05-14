@@ -8,6 +8,7 @@ from torchmetrics import MetricCollection, Accuracy
 
 from nnsimple import nn
 from nnsimple import Predictor
+from nnsimple.utils.data.custom_dataset import CustomImageDataset
 import numpy as np
 
 
@@ -36,7 +37,15 @@ def main():
     train_sampler = torch.utils.data.SubsetRandomSampler(train_indexes)
     val_sampler = torch.utils.data.SubsetRandomSampler(val_indexes)
 
+    # These are the hyperparameters for the model.
     batch_size = 32
+    learning_rate = 0.001
+    momentum = 0.9
+    input_size = 3
+    hidden_size = 32
+    n_classes = 10
+    dropout = 0.5
+    kernel_size = 3
 
     train_loader = torch.utils.data.DataLoader(train_set,
                                                batch_size=batch_size,
@@ -56,14 +65,7 @@ def main():
     # plt.imshow(image[0].permute(1, 2, 0))
     # plt.show()
 
-    learning_rate = 0.001
-    momentum = 0.9
 
-    input_size = 3
-    hidden_size = 32
-    n_classes = 10
-    dropout = 0.5
-    kernel_size = 3
 
     model = nn.models.CNN(input_size, hidden_size, n_classes, kernel_size, dropout)
     loss_fn = torch.nn.CrossEntropyLoss()

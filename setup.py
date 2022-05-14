@@ -1,7 +1,7 @@
 from setuptools import find_packages, setup
 
 __version__ = '0.0.1'
-URL = ''
+URL = 'https://github.com/marcolatella/NNsimple'
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
@@ -12,6 +12,7 @@ install_requires = [
     'pandas',
     'pytorch_lightning>=1.5',
     'torchvision',
+    'torchaudio',
     'torchmetrics',
     'PyYAML',
     'torch>=1.11',
@@ -19,6 +20,7 @@ install_requires = [
 ]
 
 full_install_requires = [
+    'matplotlib'
 ]
 
 setup(
