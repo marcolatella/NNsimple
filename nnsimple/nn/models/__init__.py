@@ -1,2 +1,2 @@
-from .convNN import CNN
+from .cnn import CNN
 

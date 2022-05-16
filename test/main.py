@@ -65,8 +65,6 @@ def main():
     # plt.imshow(image[0].permute(1, 2, 0))
     # plt.show()
 
-
-
     model = nn.models.CNN(input_size, hidden_size, n_classes, kernel_size, dropout)
     loss_fn = torch.nn.CrossEntropyLoss()
     optimizer = optim.SGD(model.parameters(), lr=learning_rate, momentum=momentum)

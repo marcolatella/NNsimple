@@ -20,7 +20,7 @@ class Predictor(pl.LightningModule):
             # TODO check if keys in 'metrics' exist ('train_metrics', ...)
             self.train_metric = metrics['train_metrics']
             self.val_metric = metrics['val_metrics']
-            self.test_metric = metrics['test_metrics']
+            #self.test_metric = metrics['test_metrics']
             # TODO else condition
 
     def training_step(self, batch, batch_index):
