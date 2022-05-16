@@ -5,10 +5,8 @@ import torchvision.transforms as transforms
 import torch.optim as optim
 from pytorch_lightning.callbacks import ModelCheckpoint
 from torchmetrics import MetricCollection, Accuracy
-
 from nnsimple import nn
 from nnsimple import Predictor
-from nnsimple.utils.data.custom_dataset import CustomImageDataset
 import numpy as np
 
 
