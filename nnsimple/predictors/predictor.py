@@ -4,16 +4,24 @@ import pytorch_lightning as pl
 class Predictor(pl.LightningModule):
     def __init__(self,
                  model,
+                 model_params,
                  loss_fn,
                  optimizer,
+                 optim_params,
                  metrics):
         super(Predictor, self).__init__()
+        self.save_hyperparameters()
         self.model = model
+        self.model_params = model_params
         self.loss_fn = loss_fn
-        self.optimizer = optimizer
+        self.optim_params = optim_params
         self.train_metric = None
         self.val_metric = None
         self.test_metric = None
+
+        print(self.optim_params)
+        self.model = self.model(**self.model_params)
+        self.optimizer = optimizer(self.parameters(), **self.optim_params)
 
         # Checking if the metrics is a dictionary.
         if isinstance(metrics, dict):
