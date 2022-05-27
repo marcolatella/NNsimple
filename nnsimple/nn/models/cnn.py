@@ -11,7 +11,7 @@ class CNN(nn.Module):
                  out_size,
                  image_shape,
                  kernel_size=3,
-                 kernel_pooling = 2,
+                 kernel_pooling=2,
                  dropout=0.0,
                  n_layers_mlp=1,
                  stride=1,

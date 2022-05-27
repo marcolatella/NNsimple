@@ -1,4 +1,5 @@
 import pytorch_lightning as pl
+import torch
 
 
 class Predictor(pl.LightningModule):
@@ -19,7 +20,6 @@ class Predictor(pl.LightningModule):
         self.val_metric = None
         self.test_metric = None
 
-        print(self.optim_params)
         self.model = self.model(**self.model_params)
         self.optimizer = optimizer(self.parameters(), **self.optim_params)
 
@@ -28,7 +28,7 @@ class Predictor(pl.LightningModule):
             # TODO check if keys in 'metrics' exist ('train_metrics', ...)
             self.train_metric = metrics['train_metrics']
             self.val_metric = metrics['val_metrics']
-            #self.test_metric = metrics['test_metrics']
+            self.test_metric = metrics['test_metrics']
             # TODO else condition
 
     def training_step(self, batch, batch_index):
@@ -44,8 +44,9 @@ class Predictor(pl.LightningModule):
         logits = self.model(x)
         train_loss = self.loss_fn(logits, y)
         metrics = self.train_metric(logits, y)
-        self.log_dict(metrics, on_step=False, on_epoch=True, prog_bar=True, logger=True)
-        self.log('train_loss', train_loss, prog_bar=True, on_step=True)
+        if self.global_step % 20 == 0:
+            self.log_dict(metrics, on_step=True, on_epoch=True, prog_bar=True, logger=True)
+            self.log('train_loss', train_loss, on_epoch=True)
         return train_loss
 
     def validation_step(self, batch, batch_index):
@@ -61,7 +62,7 @@ class Predictor(pl.LightningModule):
         val_loss = self.loss_fn(logits, y)
         metrics = self.val_metric(logits, y)
         self.log_dict(metrics, on_step=False, on_epoch=True, prog_bar=True, logger=True)
-        self.log('val_loss', val_loss, prog_bar=True)
+        self.log('val_loss', val_loss, prog_bar=True, on_epoch=True)
         return val_loss
 
     def test_step(self, batch, batch_index):

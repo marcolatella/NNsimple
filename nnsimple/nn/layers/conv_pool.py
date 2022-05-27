@@ -14,8 +14,6 @@ class ConvPool(nn.Module):
         self.layer1 = nn.Sequential(
             nn.Conv2d(self.input_size, self.hidden_size, self.kernel_size),
             nn.ReLU(),
-            nn.Conv2d(self.hidden_size, self.hidden_size, self.kernel_size),
-            nn.ReLU(),
             nn.MaxPool2d(kernel_size=self.kernel_pooling),
             nn.Dropout(self.dropout)
         )
