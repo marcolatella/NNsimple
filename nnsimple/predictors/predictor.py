@@ -20,8 +20,10 @@ class Predictor(pl.LightningModule):
         self.val_metric = None
         self.test_metric = None
 
-        self.model = self.model(**self.model_params)
-        self.optimizer = optimizer(self.parameters(), **self.optim_params)
+        if self.model is not None:
+            self.model = self.model(**self.model_params)
+        if optimizer is not None:
+            self.optimizer = optimizer(self.parameters(), **self.optim_params)
 
         # Checking if the metrics is a dictionary.
         if isinstance(metrics, dict):
@@ -80,6 +82,12 @@ class Predictor(pl.LightningModule):
         metrics = self.test_metric(logits, y)
         self.log_dict(metrics, on_step=False, on_epoch=True, prog_bar=True, logger=True)
         return test_loss
+
+    def predict_step(self, batch, batch_idx, dataloader_idx=0):
+        return self.forward(batch)
+
+    def forward(self, *args, **kwargs):
+        return self.model(*args, **kwargs)
 
     def configure_optimizers(self):
         """
