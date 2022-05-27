@@ -5,6 +5,9 @@ import torchvision.transforms as transforms
 import torch.optim as optim
 from pytorch_lightning.callbacks import ModelCheckpoint
 from torchmetrics import MetricCollection, Accuracy
+
+import nnsimple
+from pytorch_lightning.loggers import NeptuneLogger
 from nnsimple import nn
 from nnsimple import Predictor
 import numpy as np
@@ -63,9 +66,18 @@ def main():
     # plt.imshow(image[0].permute(1, 2, 0))
     # plt.show()
 
-    model = nn.models.CNN(input_size, hidden_size, n_classes, kernel_size, dropout)
+    hparam = {"input_size": 3,
+              "hidden_size_conv": 32,
+              "hidden_size_fc": 512,
+              "out_size": 10,
+              "image_shape": None,
+              "kernel_size": 3,
+              "kernel_pooling": 2,
+              "dropout": 0.5}
+
+    model = nnsimple.nn.models.CNN
     loss_fn = torch.nn.CrossEntropyLoss()
-    optimizer = optim.SGD(model.parameters(), lr=learning_rate, momentum=momentum)
+    optim = torch.optim.SGD
 
     metrics = {
         'train_metrics': MetricCollection({'train_acc': Accuracy()}),
@@ -73,17 +85,31 @@ def main():
         'test_metrics': MetricCollection({'test_acc': Accuracy()})
     }
 
+    optim_params = {'lr': 0.001,
+                    'momentum': 0.9}
+
     predictor = Predictor(model=model,
+                          model_params=hparam,
                           loss_fn=loss_fn,
-                          optimizer=optimizer,
+                          optimizer=optim,
+                          optim_params=optim_params,
                           metrics=metrics)
 
     checkpoint_callback = ModelCheckpoint(save_top_k=1,
                                           monitor='val_acc', mode='max')
 
-    trainer = Trainer(max_epochs=2,
+    neptune_logger = NeptuneLogger(
+        api_key="eyJhcGlfYWRkcmVzcyI6Imh0dHBzOi8vYXBwLm5lcHR1bmUuYWkiLCJhcGlfdXJsIjoiaHR0cHM6Ly9hcHAubmVwdHVuZS5haSIsImFwaV9rZXkiOiIyMmU3OTdmOC1lNTMzLTQyZjAtOWQ4OS1hZWE0Y2FiZGIzOWUifQ==",
+        # replace with your own
+        project="marcolatella/Robotics",
+        tags=["training", "CNN"],  # optional
+    )
+
+    trainer = Trainer(max_epochs=5,
                       gpus=1 if torch.cuda.is_available() else None,
                       callbacks=[checkpoint_callback],
+                      accumulate_grad_batches=1,
+                      logger=neptune_logger
                       )
 
     trainer.fit(predictor,
