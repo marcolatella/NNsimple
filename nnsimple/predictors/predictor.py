@@ -4,12 +4,12 @@ import torch
 
 class Predictor(pl.LightningModule):
     def __init__(self,
-                 model,
-                 model_params,
-                 loss_fn,
-                 optimizer,
-                 optim_params,
-                 metrics):
+                 model = None,
+                 model_params = None,
+                 loss_fn = None,
+                 optimizer = None,
+                 optim_params = None,
+                 metrics = None):
         super(Predictor, self).__init__()
         self.save_hyperparameters()
         self.model = model
